@@ -376,14 +376,14 @@ public class login extends javax.swing.JFrame {
             Connection con = DriverManager.getConnection(conURL);
 
             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM login "
-                    + "WHERE username = ?  AND pass = MD5(?);");
+                    + "WHERE username = ?  AND pass = md5(?);");
             pstmt.setString(1, sun);
             pstmt.setString(2, spass);
 
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                new home().setVisible(true);
+                new main_product().setVisible(true);
                 this.setVisible(false);
                 //  JFrame home = new home(sun);
             } else {
@@ -394,7 +394,7 @@ public class login extends javax.swing.JFrame {
 
             //==========
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
 
         }
 //        logins();
