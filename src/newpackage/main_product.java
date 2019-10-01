@@ -84,6 +84,7 @@ public class main_product extends javax.swing.JFrame {
         protable = new javax.swing.JTable();
         jToggleButton2 = new javax.swing.JToggleButton();
         jLabel6 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         ap.setMinimumSize(new java.awt.Dimension(354, 251));
         ap.setPreferredSize(new java.awt.Dimension(354, 251));
@@ -206,6 +207,13 @@ public class main_product extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
         jLabel6.setText("WELCOME ADMIN");
 
+        jButton1.setText("DELETE");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -218,6 +226,8 @@ public class main_product extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(mainproduct)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jToggleButton2)
                         .addGap(31, 31, 31))))
@@ -236,7 +246,8 @@ public class main_product extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jToggleButton2)
-                    .addComponent(mainproduct))
+                    .addComponent(mainproduct)
+                    .addComponent(jButton1))
                 .addGap(19, 19, 19))
         );
 
@@ -297,6 +308,42 @@ public class main_product extends javax.swing.JFrame {
         //  pobj.addProduct(pro, qty, pr);        // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int selRow = protable.getSelectedRow();
+        if (selRow != -1) {
+            int column = 0;
+            String id = protable
+                    .getValueAt(selRow, column).toString();
+            int ans = JOptionPane.showConfirmDialog(rootPane,
+                    "Are you sure you want to DELETE this Product?",
+                    "Delete Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (ans == JOptionPane.YES_OPTION) {
+                try {
+                    Class.forName("com.mysql.jdbc.Driver");
+                    String conURL = "jdbc:mysql://localhost/lincodb"
+                            + "?user=root&password=";
+                    java.sql.Connection con = DriverManager.getConnection(conURL);
+                    PreparedStatement pstmt = con.prepareStatement("DELETE FROM products "
+                            + "WHERE id = ? ");
+                    pstmt.setString(1, id);
+                    pstmt.executeUpdate();
+
+                    JOptionPane.showMessageDialog(rootPane, "One Row has Succesfully Deleted");
+                    refresh();
+                } catch (ClassNotFoundException | SQLException ex) {
+                    Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "Please select row to be Deleted!",
+                    "No Row Selected",
+                    JOptionPane.WARNING_MESSAGE);
+
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -334,6 +381,7 @@ public class main_product extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog ap;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
