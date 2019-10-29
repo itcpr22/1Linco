@@ -190,10 +190,6 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="jLabel6" min="-2" pref="225" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="mainproduct" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -208,6 +204,17 @@
                           <Component id="jScrollPane1" pref="0" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="search" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="txt" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="jLabel6" min="-2" pref="225" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
           </Group>
@@ -217,7 +224,12 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="84" max="32767" attributes="0"/>
+                  <EmptySpace pref="43" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="search" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="117" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -318,6 +330,20 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="search">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Search"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="txt">
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtActionPerformed"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtKeyReleased"/>
           </Events>
         </Component>
       </SubComponents>

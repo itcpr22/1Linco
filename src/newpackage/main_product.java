@@ -134,6 +134,8 @@ public class main_product extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        search = new javax.swing.JButton();
+        txt = new javax.swing.JTextField();
 
         ap.setMinimumSize(new java.awt.Dimension(354, 251));
         ap.setResizable(false);
@@ -282,6 +284,24 @@ public class main_product extends javax.swing.JFrame {
             }
         });
 
+        search.setText("Search");
+        search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchActionPerformed(evt);
+            }
+        });
+
+        txt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtActionPerformed(evt);
+            }
+        });
+        txt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -289,9 +309,6 @@ public class main_product extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(52, 52, 52)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(mainproduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -303,6 +320,14 @@ public class main_product extends javax.swing.JFrame {
                         .addGap(31, 31, 31))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(search)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
@@ -310,7 +335,11 @@ public class main_product extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(search)
+                    .addComponent(txt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(80, 80, 80)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -462,6 +491,26 @@ public class main_product extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_saveActionPerformed
 
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+ String keyword = txt.getText();
+        this.search(keyword);
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchActionPerformed
+
+    private void txtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtActionPerformed
+ 
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtActionPerformed
+
+    private void txtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtKeyReleased
+String keyword = txt.getText();
+        this.search(keyword);
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -517,6 +566,8 @@ public class main_product extends javax.swing.JFrame {
     private javax.swing.JTable protable;
     private javax.swing.JSpinner quantity;
     private javax.swing.JButton save;
+    private javax.swing.JButton search;
+    private javax.swing.JTextField txt;
     // End of variables declaration//GEN-END:variables
 
    
