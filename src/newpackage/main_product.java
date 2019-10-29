@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static jdk.nashorn.internal.runtime.Debug.id;
 
 /**
  *
@@ -34,8 +35,23 @@ public class main_product extends javax.swing.JFrame {
         initComponents();
         jLabel6.setText("Welcome" + fname);
         this.setLocationRelativeTo(null);
+           refresh();
+    }
+    
+        product product_obj = new product();
+    conn con = new conn();
+    
+ Object id = null;
+    
+    void clearAddProductFields(){
+        product.setText(null);
+        quantity.setValue(0);
+        price.setText(null);
+        product.requestFocus();
 
     }
+
+    
     //main_product pobj = new main_product();
 
     final void refresh() {
@@ -59,6 +75,36 @@ public class main_product extends javax.swing.JFrame {
             Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+      
+    final void search(String keyword){
+        
+        try{
+             Class.forName("com.mysql.jdbc.Driver");
+            String conURL = "jdbc:mysql://localhost/lincodb"
+                    + "?user=root&password=";
+            Connection con = DriverManager.getConnection(conURL);
+        
+            String sql = "SELECT * FROM products WHERE id LIKE ? OR product LIKE ?";
+            PreparedStatement pstmt = (PreparedStatement) con.prepareStatement(sql);
+            
+            
+            pstmt.setString(1, "%"+keyword+"%");
+            pstmt.setString(2, "%"+keyword+"%");
+            
+            ResultSet rs = pstmt.executeQuery();
+            DefaultTableModel model = (DefaultTableModel) protable.getModel();
+            model.setRowCount(0);
+            while(rs.next()){
+                model.addRow(new Object[]{rs.getString("id"),rs.getString("product"),rs.getString("qt"),rs.getString("price")});
+            }     
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,8 +122,10 @@ public class main_product extends javax.swing.JFrame {
         quantity = new javax.swing.JSpinner();
         price = new javax.swing.JFormattedTextField();
         jLabel3 = new javax.swing.JLabel();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        add = new javax.swing.JToggleButton();
         jLabel5 = new javax.swing.JLabel();
+        save = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         mainproduct = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -85,9 +133,9 @@ public class main_product extends javax.swing.JFrame {
         jToggleButton2 = new javax.swing.JToggleButton();
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         ap.setMinimumSize(new java.awt.Dimension(354, 251));
-        ap.setPreferredSize(new java.awt.Dimension(354, 251));
         ap.setResizable(false);
 
         jPanel2.setBackground(new java.awt.Color(0, 204, 204));
@@ -100,14 +148,21 @@ public class main_product extends javax.swing.JFrame {
 
         jLabel3.setText("QUANTITY:");
 
-        jToggleButton3.setText("ADD");
-        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+        add.setText("ADD");
+        add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton3ActionPerformed(evt);
+                addActionPerformed(evt);
             }
         });
 
         jLabel5.setText("PRICE:");
+
+        save.setText("save");
+        save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -116,19 +171,21 @@ public class main_product extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(product, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(86, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jToggleButton3)
-                .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(product, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(add)
+                        .addGap(46, 46, 46)
+                        .addComponent(save)))
+                .addContainerGap(105, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,9 +202,11 @@ public class main_product extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
-                .addComponent(jToggleButton3)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(add)
+                    .addComponent(save))
+                .addGap(38, 38, 38))
         );
 
         javax.swing.GroupLayout apLayout = new javax.swing.GroupLayout(ap.getContentPane());
@@ -160,6 +219,8 @@ public class main_product extends javax.swing.JFrame {
             apLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+
+        jButton3.setText("jButton3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -214,6 +275,13 @@ public class main_product extends javax.swing.JFrame {
             }
         });
 
+        jButton4.setText("Edit");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -224,30 +292,32 @@ public class main_product extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(mainproduct)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                        .addGap(113, 113, 113)
                         .addComponent(jToggleButton2)
-                        .addGap(31, 31, 31))))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(41, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 374, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
+                        .addGap(31, 31, 31))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addGap(49, 49, 49)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                .addGap(80, 80, 80)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jToggleButton2)
                     .addComponent(mainproduct)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jButton4))
                 .addGap(19, 19, 19))
         );
 
@@ -275,7 +345,7 @@ public class main_product extends javax.swing.JFrame {
         System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton2ActionPerformed
 
-    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         String pro = product.getText();
         int qty = (int) quantity.getValue();
         Object pr = price.getValue();
@@ -306,7 +376,7 @@ public class main_product extends javax.swing.JFrame {
         }
 
         //  pobj.addProduct(pro, qty, pr);        // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton3ActionPerformed
+    }//GEN-LAST:event_addActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         int selRow = protable.getSelectedRow();
@@ -344,6 +414,54 @@ public class main_product extends javax.swing.JFrame {
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+
+        int table_row = protable.getSelectedRow();
+       clearAddProductFields();
+
+        if(table_row != -1){
+            id = protable.getValueAt(table_row, 0);
+            Object products = protable.getValueAt(table_row, 1);
+            Object quan = protable.getValueAt(table_row, 2);
+            Object pri = protable.getValueAt(table_row, 3);
+
+            product.setText((String) products);
+            quantity.setValue(Integer.valueOf((String) quan));
+            price.setValue(Double.valueOf((String) pri));
+
+            ap.setVisible(true);
+            ap.setLocationRelativeTo(rootPane);
+            ap.setAlwaysOnTop(true);
+            save.setVisible(true);
+            add.setVisible(false);
+            
+
+            quantity.setEnabled(false);
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Please Select a product", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+ String newpn = product.getText();
+        Object newpr = price.getValue();
+        
+        int r = product_obj.editProduct(id, newpn, newpr);
+        if(r==1){
+            JOptionPane.showMessageDialog(ap, "Product Edit Successfully");
+            ap.setVisible(false);
+            this.refresh();
+        }else{
+            JOptionPane.showMessageDialog(ap, "Problem Editing Produc", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_saveActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -380,8 +498,11 @@ public class main_product extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton add;
     private javax.swing.JDialog ap;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -390,12 +511,14 @@ public class main_product extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToggleButton mainproduct;
     private javax.swing.JFormattedTextField price;
     private javax.swing.JTextField product;
     private javax.swing.JTable protable;
     private javax.swing.JSpinner quantity;
+    private javax.swing.JButton save;
     // End of variables declaration//GEN-END:variables
+
+   
 
 }
