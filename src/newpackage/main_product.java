@@ -28,14 +28,15 @@ public class main_product extends javax.swing.JFrame {
      */
     public main_product() {
         initComponents();
-        refresh();
+        this.setLocationRelativeTo(null);
+        refreshThread.start();
     }
 
     public main_product(String fname) {
         initComponents();
         jLabel6.setText("Welcome" + fname);
         this.setLocationRelativeTo(null);
-           refresh();
+        refreshThread.start();
     }
     
         product product_obj = new product();
@@ -48,9 +49,23 @@ public class main_product extends javax.swing.JFrame {
         quantity.setValue(0);
         price.setText(null);
         product.requestFocus();
-
+        label.setText(null);
     }
-
+ Thread refreshThread = new Thread(new Runnable() {     
+        @Override
+        public void run(){
+            try{
+                while(true){
+                    refresh();
+                    //System.out.println("Refresh");
+                    Thread.sleep(5000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    });  
     
     //main_product pobj = new main_product();
 
@@ -68,7 +83,7 @@ public class main_product extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) protable.getModel();
             model.setRowCount(0);
             while (rs.next()) {
-                model.addRow(new Object[]{rs.getString("id"), rs.getString("product"), rs.getString("qt"), rs.getString("price")});
+                model.addRow(new Object[]{rs.getString("Product_id"), rs.getString("product"), rs.getString("qt"), rs.getString("price")});
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
@@ -84,7 +99,7 @@ public class main_product extends javax.swing.JFrame {
                     + "?user=root&password=";
             Connection con = DriverManager.getConnection(conURL);
         
-            String sql = "SELECT * FROM products WHERE id LIKE ? OR product LIKE ?";
+            String sql = "SELECT * FROM products WHERE Product_id LIKE ? OR product LIKE ?";
             PreparedStatement pstmt = (PreparedStatement) con.prepareStatement(sql);
             
             
@@ -95,7 +110,7 @@ public class main_product extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) protable.getModel();
             model.setRowCount(0);
             while(rs.next()){
-                model.addRow(new Object[]{rs.getString("id"),rs.getString("product"),rs.getString("qt"),rs.getString("price")});
+                model.addRow(new Object[]{rs.getString("Product_id"),rs.getString("product"),rs.getString("qt"),rs.getString("price")});
             }     
             
         } catch (ClassNotFoundException ex) {
@@ -104,7 +119,12 @@ public class main_product extends javax.swing.JFrame {
             Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+      final void enableAddProductFields(){
+        product.setEnabled(true);
+        quantity.setEnabled(true);
+        price.setEnabled(true);
+        clearAddProductFields();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -127,6 +147,7 @@ public class main_product extends javax.swing.JFrame {
         save = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         label = new javax.swing.JLabel();
+        addquantity = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         mainproduct = new javax.swing.JToggleButton();
@@ -172,6 +193,13 @@ public class main_product extends javax.swing.JFrame {
             }
         });
 
+        addquantity.setText("Add quantity");
+        addquantity.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addquantityActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -197,10 +225,12 @@ public class main_product extends javax.swing.JFrame {
                         .addContainerGap(100, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(save)
-                            .addComponent(add))
-                        .addGap(162, 162, 162))))
+                        .addComponent(addquantity)
+                        .addGap(33, 33, 33)
+                        .addComponent(add)
+                        .addGap(32, 32, 32)
+                        .addComponent(save)
+                        .addGap(62, 62, 62))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,10 +256,11 @@ public class main_product extends javax.swing.JFrame {
                     .addComponent(jLabel5)
                     .addComponent(price, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addComponent(save)
-                .addGap(18, 18, 18)
-                .addComponent(add)
-                .addGap(29, 29, 29))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(save)
+                    .addComponent(addquantity)
+                    .addComponent(add))
+                .addGap(70, 70, 70))
         );
 
         javax.swing.GroupLayout apLayout = new javax.swing.GroupLayout(ap.getContentPane());
@@ -396,9 +427,16 @@ public class main_product extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void mainproductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mainproductActionPerformed
-
-        ap.setVisible(true);
-        ap.setAlwaysOnTop(true);// TODO add your handling code here:
+       ap.setVisible(true);
+        ap.setLocationRelativeTo(rootPane);
+        ap.setAlwaysOnTop(true);
+        
+        add.setVisible(true);
+        save.setVisible(false);
+        quantity.setVisible(true);
+        
+      this.enableAddProductFields();
+       // TODO add your handling code here:
     }//GEN-LAST:event_mainproductActionPerformed
 
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
@@ -456,7 +494,7 @@ public class main_product extends javax.swing.JFrame {
                             + "?user=root&password=";
                     java.sql.Connection con = DriverManager.getConnection(conURL);
                     PreparedStatement pstmt = con.prepareStatement("DELETE FROM products "
-                            + "WHERE id = ? ");
+                            + "WHERE Product_id = ? ");
                     pstmt.setString(1, id);
                     pstmt.executeUpdate();
 
@@ -478,7 +516,7 @@ public class main_product extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         int table_row = protable.getSelectedRow();
-       clearAddProductFields();
+         this.clearAddProductFields();
 
         if(table_row != -1){
             id = protable.getValueAt(table_row, 0);
@@ -495,7 +533,7 @@ public class main_product extends javax.swing.JFrame {
             ap.setAlwaysOnTop(true);
             save.setVisible(true);
             add.setVisible(false);
-            
+            addquantity.setVisible(false);
 
             quantity.setEnabled(false);
         }else{
@@ -514,7 +552,7 @@ public class main_product extends javax.swing.JFrame {
             ap.setVisible(false);
             this.refresh();
         }else{
-            JOptionPane.showMessageDialog(ap, "Problem Editing Produc", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(ap, "Problem Editing Product", "Error", JOptionPane.ERROR_MESSAGE);
         }
         
 
@@ -571,6 +609,23 @@ String keyword = txt.getText();
         }
     }//GEN-LAST:event_addquantActionPerformed
 
+    private void addquantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addquantityActionPerformed
+  String pro = product.getText();
+       Object qty = quantity.getValue();
+        int c = JOptionPane.showConfirmDialog(ap, "Would you like to add\n "+qty+"\n to "+pro+" product?", "Add Quantity", JOptionPane.YES_NO_OPTION);
+        if(c == JOptionPane.YES_OPTION){
+           int r = product_obj.addquantity(id, qty);
+            if(r==1){
+              JOptionPane.showMessageDialog(ap, "Quantity Updated");
+               ap.setVisible(false);
+                this.refresh();
+            
+            }
+        }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_addquantityActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -609,6 +664,7 @@ String keyword = txt.getText();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton add;
     private javax.swing.JButton addquant;
+    private javax.swing.JButton addquantity;
     private javax.swing.JDialog ap;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
