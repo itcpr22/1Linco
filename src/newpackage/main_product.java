@@ -5,6 +5,11 @@
  */
 package newpackage;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,6 +35,7 @@ public class main_product extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         refreshThread.start();
+        checkLowQty.start();
     }
 
     public main_product(String fname) {
@@ -37,6 +43,7 @@ public class main_product extends javax.swing.JFrame {
         jLabel6.setText("Welcome" + fname);
         this.setLocationRelativeTo(null);
         refreshThread.start();
+        checkLowQty.start();
     }
     
         product product_obj = new product();
@@ -67,7 +74,64 @@ public class main_product extends javax.swing.JFrame {
         }
     });  
     
-    //main_product pobj = new main_product();
+    final void checkLowQuantity(){
+        Notification n = new Notification();
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection(con.url,con.username,con.password);
+            
+            String sql = "select * from products;";
+            String status_sql = "UPDATE products SET status=? WHERE Product_id=?;";
+            com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
+            
+            com.mysql.jdbc.PreparedStatement pstmt = (com.mysql.jdbc.PreparedStatement) conn.prepareStatement(status_sql);
+            
+            ResultSet rs = stmt.executeQuery(sql);
+            
+            while(rs.next()){
+                String Product_id = rs.getString("Product_id");
+                int qty = Integer.parseInt(rs.getString("qt"));
+                int status = rs.getInt("status");
+                String products = rs.getString("product");
+                
+                if (qty < 5 &&  status != 1){
+                    pstmt.setInt(1, 1);
+                    pstmt.setString(2, Product_id);
+                    pstmt.executeUpdate();
+                    n.displayNotification(products);
+                }else if(qty > 5 &&  status == 1){
+                    
+                    pstmt.setInt(1, 2);
+                    pstmt.setString(2, Product_id);
+                    pstmt.executeUpdate();
+                
+                }
+            }
+                
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (AWTException ex) {
+            Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    Thread checkLowQty = new Thread(new Runnable(){
+        
+        @Override
+        public void run(){
+            try{
+                while(true){
+                    checkLowQuantity();
+                    Thread.sleep(5000);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(main_product.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    });
+
 
     final void refresh() {
         try {
@@ -125,6 +189,24 @@ public class main_product extends javax.swing.JFrame {
         price.setEnabled(true);
         clearAddProductFields();
     }
+       class Notification{
+    
+        void displayNotification(String product) throws AWTException{
+        
+        SystemTray tray = SystemTray.getSystemTray();
+        
+        Image image = Toolkit.getDefaultToolkit().createImage("img/a.png");
+        
+        TrayIcon trayIcon = new TrayIcon(image,"Tray Icon"); 
+        
+        trayIcon.setImageAutoSize(true);
+        tray.add(trayIcon);
+        
+        trayIcon.displayMessage("LOW QUANTITY", product+" Product Low on Quantity", TrayIcon.MessageType.WARNING);
+        
+        }
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -171,7 +253,7 @@ public class main_product extends javax.swing.JFrame {
 
         quantity.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
-        price.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        price.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel3.setText("QUANTITY:");

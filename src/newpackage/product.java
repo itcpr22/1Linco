@@ -14,7 +14,33 @@ import java.util.logging.Logger;
  */
 public class product {
      conn con = new conn();
-   
+    public int addProduct(String product, int qt, Object price){
+        int r = 0;
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conn = (Connection) DriverManager.getConnection(con.url,con.username,con.password);
+            
+            String sql = "insert into products values(null,?,?,?);";
+            PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(sql);
+            
+            String np = price.toString();
+            float newprice = Float.parseFloat(np);
+                    
+            pstmt.setString(1, product);
+            pstmt.setInt(2, qt);
+            pstmt.setFloat(3, newprice);
+            
+            r = pstmt.executeUpdate();
+            //System.out.println(pstmt);
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(product.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return r;
+    }
+      
     
     public int deleteProduct(Object id){
         int r = 0;
