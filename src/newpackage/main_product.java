@@ -81,28 +81,28 @@ public class main_product extends javax.swing.JFrame {
             com.mysql.jdbc.Connection conn = (com.mysql.jdbc.Connection) DriverManager.getConnection(con.url,con.username,con.password);
             
             String sql = "select * from products;";
-            String status_sql = "UPDATE products SET status=? WHERE Product_id=?;";
+            String Status_sql = "UPDATE products SET Status=? WHERE id=?;";
             com.mysql.jdbc.Statement stmt = (com.mysql.jdbc.Statement) conn.createStatement();
             
-            com.mysql.jdbc.PreparedStatement pstmt = (com.mysql.jdbc.PreparedStatement) conn.prepareStatement(status_sql);
+            com.mysql.jdbc.PreparedStatement pstmt = (com.mysql.jdbc.PreparedStatement) conn.prepareStatement(Status_sql);
             
             ResultSet rs = stmt.executeQuery(sql);
             
             while(rs.next()){
-                String Product_id = rs.getString("Product_id");
+                String id = rs.getString("id");
                 int qty = Integer.parseInt(rs.getString("qt"));
-                int status = rs.getInt("status");
+                int Status = rs.getInt("Status");
                 String products = rs.getString("product");
                 
-                if (qty < 5 &&  status != 1){
+                if (qty < 5 &&  Status != 1){
                     pstmt.setInt(1, 1);
-                    pstmt.setString(2, Product_id);
+                    pstmt.setString(2, id);
                     pstmt.executeUpdate();
                     n.displayNotification(products);
-                }else if(qty > 5 &&  status == 1){
+                }else if(qty > 5 &&  Status == 1){
                     
                     pstmt.setInt(1, 2);
-                    pstmt.setString(2, Product_id);
+                    pstmt.setString(2, id);
                     pstmt.executeUpdate();
                 
                 }
@@ -147,7 +147,7 @@ public class main_product extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) protable.getModel();
             model.setRowCount(0);
             while (rs.next()) {
-                model.addRow(new Object[]{rs.getString("Product_id"), rs.getString("product"), rs.getString("qt"), rs.getString("price")});
+                model.addRow(new Object[]{rs.getString("id"), rs.getString("product"), rs.getString("qt"), rs.getString("price")});
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
@@ -163,7 +163,7 @@ public class main_product extends javax.swing.JFrame {
                     + "?user=root&password=";
             Connection con = DriverManager.getConnection(conURL);
         
-            String sql = "SELECT * FROM products WHERE Product_id LIKE ? OR product LIKE ?";
+            String sql = "SELECT * FROM products WHERE id LIKE ? OR product LIKE ?";
             PreparedStatement pstmt = (PreparedStatement) con.prepareStatement(sql);
             
             
@@ -174,7 +174,7 @@ public class main_product extends javax.swing.JFrame {
             DefaultTableModel model = (DefaultTableModel) protable.getModel();
             model.setRowCount(0);
             while(rs.next()){
-                model.addRow(new Object[]{rs.getString("Product_id"),rs.getString("product"),rs.getString("qt"),rs.getString("price")});
+                model.addRow(new Object[]{rs.getString("id"),rs.getString("product"),rs.getString("qt"),rs.getString("price")});
             }     
             
         } catch (ClassNotFoundException ex) {
@@ -576,7 +576,7 @@ public class main_product extends javax.swing.JFrame {
                             + "?user=root&password=";
                     java.sql.Connection con = DriverManager.getConnection(conURL);
                     PreparedStatement pstmt = con.prepareStatement("DELETE FROM products "
-                            + "WHERE Product_id = ? ");
+                            + "WHERE id = ? ");
                     pstmt.setString(1, id);
                     pstmt.executeUpdate();
 

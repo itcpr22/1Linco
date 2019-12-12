@@ -26,8 +26,8 @@ Pos_class posf = new Pos_class();
         if(rows > 0){
             
             for(int i = 0; i < rows; i++){
-                Object Product_id = postbl.getValueAt(i, 0);
-                if(Product_id.equals(BC)){
+                Object id = postbl.getValueAt(i, 0);
+                if(id.equals(BC)){
                     Object qty = postbl.getValueAt(i, 1);
                     Object price = postbl.getValueAt(i, 3);
                     int nqty = Integer.parseInt(qty.toString());

@@ -30,7 +30,7 @@ public class Pos_class {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = (Connection) DriverManager.getConnection(con.url,con.username,con.password);
         
-            String sql = "SELECT * FROM products WHERE Product_id = ?;";
+            String sql = "SELECT * FROM products WHERE id = ?;";
             PreparedStatement pstmt = (PreparedStatement) conn.prepareStatement(sql);
             
             pstmt.setString(1, BC);
@@ -40,7 +40,7 @@ public class Pos_class {
             DefaultTableModel model = (DefaultTableModel) table.getModel();
             if(rs.next()){
                 
-                model.addRow(new Object[]{rs.getString("Product_id"),1 ,rs.getString("product"),rs.getString("qt"), rs.getString("price")});
+                model.addRow(new Object[]{rs.getString("id"),1 ,rs.getString("product"),rs.getString("qt"), rs.getString("price")});
             }else{
                 JOptionPane.showMessageDialog(table, "No Product on database");
             }     
